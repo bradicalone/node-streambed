@@ -65,8 +65,7 @@ class YoutubeUpload extends React.Component {
     }
 
     sendFloPost = async ( floData ) => {
-        console.log(floData)
-        const response = await fetch('http://localhost:5000/sendflo', {
+        const response = await fetch('/sendflo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +73,7 @@ class YoutubeUpload extends React.Component {
             body: JSON.stringify({
                 signed64: floData
             })
-        })
+        });
         const json = await response.json();
         return json
     }
@@ -92,8 +91,7 @@ class YoutubeUpload extends React.Component {
             })
             .then((signed64)  => {
                 console.log(signed64)
-                this.sendFloPost( signed64 ).then((res)=> console.log("Sent to flo"))
-    
+                this.sendFloPost( signed64 ).then((res)=> console.log("Sent to flo ", res))
             })
         .catch(err => console.log('WalletData ' + err));
     }
@@ -101,7 +99,7 @@ class YoutubeUpload extends React.Component {
     getYouTubeData = () => {
         const checkbox = this.state['checkbox'];
 
-        fetch('http://localhost:5000/upload-youtube', {
+        fetch('http://upload-youtube', {
             method: 'POST',
             body: JSON.stringify(checkbox),
             headers: {

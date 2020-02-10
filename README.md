@@ -8,8 +8,9 @@ Before you begin, ensure you have met the following requirements:
 *   Set up New Project.
 *   Set up Credentials.
 *   Enable APIS and services within Google API & Services: Youtube Analytics API, YouTube Data API v3.
-*   Whitelist domain, ex: http://streambed.com
-*   Add callback url, ex: http://localhost:3000/oauth2callback   (ran from server, localhost ok)
+*   Whitelist domain, ex: http://streambed.com   
+    Make sure to change domain http -> https if ssl is added.
+*   Add callback url, ex: http://streambed.com/oauth2callback
 *   Download OAuth 2.0 Client IDs and save API key (apiKey) used for oauthTwo.keys.json file which is 
     added in the root directory example below of localhost (development):
 
@@ -22,8 +23,8 @@ Before you begin, ensure you have met the following requirements:
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_secret": "lLnY7kIjHHtr54FFcxsT",
-    "redirect_uris": ["http://localhost:3000/oauth2callback"],
-    "javascript_origins": ["http://localhost:3000", "http://localhost"],
+    "redirect_uris": ["http://someURLname.com/oauth2callback"],
+    "javascript_origins": ["http://someURLname.com:3000"],
     "apiKey": "9oaX7PVvJM0AIzSz5jaSyFq0CzXUADkYSnKipl8" 
   }
 }

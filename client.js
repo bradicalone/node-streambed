@@ -19,7 +19,7 @@ if (fs.existsSync(keyPath)) {
   const keyFile = require(keyPath);
   keys = keyFile.installed || keyFile.web;
 }
-console.log(keys)
+
 const invalidRedirectUri = `The provided keyfile does not define a valid
 redirect URI. There must be at least one redirect URI defined, and this sample
 assumes it redirects to 'http://localhost:3000/oauth2callback'.  Please edit
@@ -74,6 +74,7 @@ class Client {
           try {
             if (req.url.indexOf('/oauth2callback') > -1) {
               const qs = new url.URL(req.url, 'http://localhost:3000')
+              // const qs = new url.URL(req.url, 'http://streambedmedia.com')
                 .searchParams;
 
               res.end(
@@ -83,9 +84,9 @@ class Client {
               const { tokens } = await this.oAuth2Client.getToken(
                 qs.get('code')
               );
-
+              console.log('  this.oAuth2Client ', this.oAuth2Client)
               this.oAuth2Client.setCredentials(tokens);
-
+                
               /** This saves the rT to the db, userId is not accessible from the server so I sent it from when you click the youtube check box**/
               /** UserId is used look up the logged in user and save the rT**/
               if (tokens.refresh_token) {
@@ -102,8 +103,12 @@ class Client {
           }
         })
         .listen(3000, () => {
+        
           // open the browser to the authorize url to start the workflow
-          opn(this.authorizeUrl, { wait: false }).then((cp) => cp.unref());
+          opn(this.authorizeUrl, { wait: false }).then((cp) => {
+            
+            return cp.unref()
+          });
         });
 
       destroyer(server);

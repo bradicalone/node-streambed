@@ -34,6 +34,44 @@
     padding: 25px;
     margin-top: 25px;
   }
+  .errorModal {
+    position: absolute;
+    top: 251px;
+    width: 40%;
+    height: 75px;
+    background: red;
+    border-radius: 5px;
+    transform: scale(0);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .title-arrow {
+    display: block;
+    background: red;
+    width: 20px;
+    height: 20px;
+    left: 20px;
+    position: absolute;
+    transform: rotate(45deg);
+    top: -9px;
+    border-radius: 2px;
+  }
+
+  .errorModal p {
+    font-size: 17px;
+    padding: 10px;
+  }
+
+  .close-modal {
+    top: -8px;
+    right: -8px;
+    position: absolute;
+    font-size: 19px;
+    padding: 4px 7px;
+    background: #000000;
+    border-radius: 50%;
+    color: white;
+  }
   
   .component-title {
     margin-bottom: 15px;

@@ -17,13 +17,13 @@ var app = express();
 
 const { NODE_ENV, MONGO_URL, SESS_NAME, SESS_SECRET } = process.env;
 const secure = NODE_ENV === 'production' ? true : false;
-console.log(SESS_NAME)
+console.log(MONGO_URL)
 //This is used to avoid error with deprecated with findoneandupdate in the reset route
 mongoose.set('useFindAndModify', false);
 
 /**Put you DB path here, you can use this default path to host it local at this address */
 mongoose
-  .connect(MONGO_URL, {
+  .connect('', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true

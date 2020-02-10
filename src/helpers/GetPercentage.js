@@ -23,6 +23,7 @@ class GetPercentage {
 
     minutes(num) {
         let roundNum = this.toTheHundreth(num)
+        console.log(roundNum)
         let numString = roundNum + ''
         let addedColons = numString.split('.').join(':')
         console.log(addedColons)

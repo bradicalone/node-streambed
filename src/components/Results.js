@@ -12,6 +12,7 @@ class Results extends React.Component {
     }
 
     componentDidMount(){
+        console.log('hit')
         fetch('http://localhost:5000/uploaded')
         .then((response) => {
                 response.json().then((result)=> {
@@ -30,7 +31,7 @@ class Results extends React.Component {
             error => console.error // Handle the error response object
         )
     }
-
+  
     render(){
         console.log(this.state.results, this.state, this.props)
 
@@ -46,8 +47,9 @@ class Results extends React.Component {
                         </React.Fragment>
                     ) 
                 })}
-                <img className='result-item' key={this.state.imgName} width="200px" src={"../uploads/"+this.state.imgName} alt="thumbnail" />
-                <VideoElem videoName={"../uploads/"+this.state.videoName}/>
+                
+                {this.state.imgName && <img className='result-item' key={this.state.imgName} width="200px" src={"../uploads/"+this.state.imgName} alt="thumbnail" />}
+                {this.state.videoName && <VideoElem videoName={"../uploads/"+this.state.videoName}/>}
                 {this.props.getUrl === '/upload-youtube' ? <VideoConfirmation /> : <YoutubeUpload />}
                 </div>
             </div>

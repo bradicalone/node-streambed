@@ -9,7 +9,8 @@ class VideoUpload extends React.Component {
         errorText: '',
         isUploaded: false,
         percentage: '',
-        height: ''
+        height: '',
+        openErrorModal: false
     }
 
     // Either submits form or clears form fields
@@ -20,10 +21,8 @@ class VideoUpload extends React.Component {
 
             if(i < 2) {
                 todo === 'clear' ? files[i].value = '' : formData.append( 'body',files[i].value ) 
-   
             } else if (i === 2) {
                 todo === 'clear' ? files[i].value = '' : formData.append( 'myFiles', files[i].files[0] )
-          
             }
         })
         return formData
@@ -107,9 +106,28 @@ class VideoUpload extends React.Component {
         })
         return isMp4[2]
     }
+
+    titleCountLimit = (e) => {
+
+        let keyCount = document.getElementById('title').value.length
+        if (keyCount >= 100) {
+            // this.formSubmit('clear')
+            e.preventDefault()
+            this.setState({openErrorModal: true})
+        }
+        return keyCount
+    }
+    closeModal = (e) => {
+        console.log(e)
+        this.formSubmit('clear')
+        this.setState({openErrorModal: false})
+    }
     
     checkForBlankFields = (e) => {
-        if( this.state.fieldCount < 3 ) {
+        if ( this.titleCountLimit() >= 100 ) {
+            return this.setState({openErrorModal: true})
+        }  
+        if ( this.state.fieldCount < 3 ) {
             this.formSubmit('clear')
             e.preventDefault()
             return this.setState({errorText: 'Please fill out all fields before submiting.'})
@@ -121,13 +139,12 @@ class VideoUpload extends React.Component {
             e.preventDefault()
             return this.setState({errorText: 'Video must be mp4.'})
         }
-        
     }
-
+    
     componentDidMount() {
         this.setState({height: this.props.height})
     }
-
+    
     
     render(){
         return (
@@ -135,11 +152,15 @@ class VideoUpload extends React.Component {
                 <Form 
                     checkForBlankFields={this.checkForBlankFields}
                     handleChange={this.handleChange}
+                    onKeyPressed={this.titleCountLimit}
                     errorText={this.state.errorText}
                     viewProgress={this.viewProgress}
                     percentage={this.state.percentage}
+                    openErrorModal={this.state.openErrorModal}
+                    closeModal={this.closeModal}
                 />
                 {this.state.isUploaded && <Results isUploaded={this.state.isUploaded}/>}
+                
             </div>
         )
     }
@@ -155,7 +176,7 @@ const Form = (props) => {
                     <div className="field">
                         <label htmlFor="title">Video Title</label>
                         <input type="text" className="myFiles" id="title" name="title" 
-                        aria-describedby="title" placeholder="Enter video title" onChange={(e)=>{props.handleChange(e)}}/>
+                        aria-describedby="title" placeholder="Enter video title" onChange={(e)=> {props.handleChange(e)}} onKeyDown={(e) => props.onKeyPressed(e)}/>
                     </div>
                     <div className="field">
                     <label htmlFor="video">Video description</label>
@@ -173,6 +194,11 @@ const Form = (props) => {
                 <div className="progress-container">
                     <span className="progress-bar"></span>
                 </div>
+                    <div className="errorModal" style={{transform: props.openErrorModal ? "scale(1)" : "scale(0)" }}> 
+                        <span className="title-arrow"></span>
+                        <span className="close-modal" onClick={(e)=> {props.closeModal(e)}} >X</span>
+                        <p>Title must be less than 100 characters.</p>
+                    </div>
             </section>
         </div>
     )

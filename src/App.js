@@ -9,6 +9,7 @@ import './styles/IndexStyles/index.css';
 import 'semantic-ui-css/semantic.min.css';
 import ResetPassword from './components/UserForms/ResetPassword';
 import Hamburger from './components/UserForms/Hamburger';
+// import spartanbot from "spartanbot";
 
 class App extends React.Component {
   state = {
