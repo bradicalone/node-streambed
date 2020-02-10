@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import ReactJson from 'react-json-view';
 import oipPic from '../../../../public/images/oippic.png';
+import { API_OIP_URL, LIVENET_URL } from '../../../../config.json';
 
 //This is required by carousel npm package, set items to show on certain screen sizes
 const responsive = {
@@ -43,7 +44,7 @@ const CarouselComp = (props) => {
       .then((data) => {
         const { pub } = data;
         fetch(
-          `https://api.oip.io/oip/o5/record/search?q=meta.signed_by:${pub}+AND+_exists_:record.details.tmpl_834772F4`
+          `${API_OIP_URL}/oip/o5/record/search?q=meta.signed_by:${pub}+AND+_exists_:record.details.tmpl_834772F4`
         )
           .then((response) => response.json())
           .then((data) => {
@@ -64,7 +65,7 @@ const CarouselComp = (props) => {
         return c;
       }
     });
-    let floTran = `https://livenet.flocha.in/tx/${videoRec[0].meta.txid}`;
+    let floTran = `${LIVENET_URL}/tx/${videoRec[0].meta.txid}`;
     MySwal.mixin({
       html: (
         <div>
@@ -98,7 +99,7 @@ const CarouselComp = (props) => {
       .then((data) => {
         const { pub } = data;
         fetch(
-          `https://api.oip.io/oip/o5/record/search?q=meta.signed_by:${pub}+AND+_exists_:record.details.tmpl_834772F4`
+          `${API_OIP_URL}/oip/o5/record/search?q=meta.signed_by:${pub}+AND+_exists_:record.details.tmpl_834772F4`
         )
           .then((response) => response.json())
           .then((data) => {

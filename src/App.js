@@ -22,10 +22,7 @@ class App extends React.Component {
   };
 
   getUrl() {
-    let url = window.location.href;
-    const urlPath = url.replace(/^.+5000\//gi, '');
-    let path = urlPath ? '/' + urlPath : '/';
-    return path;
+    return window.location.pathname;
   }
 
   componentDidMount() {
@@ -70,7 +67,7 @@ class App extends React.Component {
         <div className='container'>
           <div className='header--container'>
             <img
-              src='/images/streambedLogo.svg'
+              src='/images/StreambedLogo.svg'
               alt='streambed logo'
               width={'250px'}
               className='streambed-logo'

@@ -14,28 +14,31 @@ const Platforms = (props) => {
       });
   });
 
-  const youtubeAuth = () => {
+  const youtubeAuth = async () => {
     if (hasRT) {
-      console.log('sup dude');
+      let brt = hasRT;
       fetch('/users/deleterT', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          rt: brt
+        })
       }).then(() => {
         setHasRT('');
         sessionStorage.clear();
         location.reload();
       });
     } else {
-      fetch('/dashboard', {
+      const response = await fetch('/youtube-auth', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         }
-      }).then(() => {
-        location.reload();
       });
+      const data = await response.json();
+      window.location.assign(data.url);
     }
   };
 

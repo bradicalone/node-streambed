@@ -4,15 +4,14 @@ const client = require('../../../client');
 
 /***USER CREATION,Currently hashes password using bcrypt, it also checks if email was used and wont let another user be created with the same email twice */
 exports.user_sign_up = (req, res) => {
-  console.log('req body', req.body);
+  const { displayName, email, password } = req.body;
 
-  const { displayName, email, password, pub, mnemonic, txid } = req.body;
   User.find({
     $or: [{ displayName: displayName }, { email: email }]
   })
     .then((user) => {
       if (user.length >= 1) {
-        res.status(409).json({
+        return res.status(409).json({
           error: 'Display name or email already exists'
         });
       } else {
@@ -25,18 +24,16 @@ exports.user_sign_up = (req, res) => {
             const user = new User({
               displayName: displayName,
               email: email,
-              password: hash,
-              pub,
-              mnemonic
+              password: hash
             });
             req.session.userId = user._id;
+
             user
               .save()
-              .then((result) => {
+              .then(() => {
                 res.status(201).json({
-                  message: 'User Created',
-                  createdUser: user,
-                  txid: txid
+                  success: 'User Created',
+                  createdUser: user
                 });
               })
               .catch((err) => {
@@ -52,36 +49,51 @@ exports.user_sign_up = (req, res) => {
 };
 /***User creation end*/
 
+/***This is called after user is created without errors, it then stores the create wallet and pubKey */
+exports.user_store_wallet_pub = async (req, res) => {
+  try {
+    const { mnemonic, pub } = req.body;
+    console.log(req.session.userId);
+    let user = await User.findOneAndUpdate(
+      { _id: req.session.userId },
+      { $set: { mnemonic: mnemonic, pub: pub } }
+    );
+    res.status(200).json({ msg: 'All Good!' });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 /******Login GET */
 exports.user_login_get = (req, res) => {
   const { userId } = req.session;
 
   // If session id doesn't exist skips redirects back to login page
-  // if (!userId) {
-  // res.redirect('/');
-  // } else {
-  res.render('dashboard', { title: 'Streambed' });
-  // }
+  if (!userId) {
+    res.redirect('/');
+  } else {
+    res.render('dashboard', { title: 'Streambed' });
+  }
 };
 /****Login Get End */
 
 /**Login POST */
 exports.user_login_post = async (req, res) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
     let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({ msg: 'Please enter correct credentials' });
+    }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.redirect('/?error=' + e);
+      return res.status(200).json({ msg: 'Please enter correct credentials' });
     }
     if (req.body.remember) {
       req.session.cookie.maxAge = 20000000000; //If they want to be remembered, its set maxAge to a ~8 months
     }
     req.session.userId = user._id;
-
-    console.log('login session', req.session);
-    res.render('dashboard');
+    res.status(200).json({ msg: 'this good', mnemonic: user.mnemonic });
   } catch (e) {
     console.log(e);
     res.redirect('/?error=' + e);
@@ -116,13 +128,14 @@ exports.user_rt = async (req, res) => {
     );
     let { rT } = rememberInfo;
 
-    console.log('Line 111 in rt route', rT);
-    client.refresh(rT);
-    const aT = await client.getNewAcc();
+    console.log('Line 131 in rt route', rT);
+    client.refresh(req.session.userId, rT);
+    const aT = await client.getNewAcc(req.session.userId);
 
     res.header('authorization', aT);
     res.status(200).render('dashboard');
   } catch (error) {
+    console.log(error);
     res.status(500).send('Server Error');
   }
 };
@@ -150,6 +163,10 @@ exports.user_getrT = async (req, res) => {
 /****Delete rT from DB */
 exports.user_deleterT = async (req, res) => {
   try {
+    const { rt } = req.body;
+    console.log(rt);
+    console.log(req.session.userId);
+    client.getOuttaHere(req.session.userId);
     const remember = await User.findOneAndUpdate(
       { _id: req.session.userId },
       { $set: { rT: '' } }
